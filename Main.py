@@ -10,13 +10,6 @@ def send_message(message):
   })
   print(resp.json)
 
-def index_to_letter(index):
-    result = ''
-    while index > 0:
-        index, remainder = divmod(index - 1, 26)
-        result = chr(65 + remainder) + result
-    return result
-
 def get_target_column(sheet, row, target):
 
   dates = sheet.sheet1.row_values(row)
@@ -33,7 +26,7 @@ def get_target_row(sheet, column, target):
 
   dates = sheet.sheet1.col_values(column)
     
-  column_index = None
+  row_index = None
   for i, value in enumerate(dates):
     if value.strip() == target:
       row_index = i + 1  # Google Sheets is 1-based
@@ -41,9 +34,7 @@ def get_target_row(sheet, column, target):
   
   return row_index
 
-
-
-
+#######################################################################################################################
 
 if __name__ == '__main__':
 
@@ -54,6 +45,7 @@ if __name__ == '__main__':
 
   attendance_data = attendance_tracker.sheet1.get_all_values()
   contact_data = contacts.sheet1.get_all_values()
+  contact_data.pop(0)
     
   user_input = input("What would you like to do?\n1) Blast message\n2) Chapter absence notification\n\n-> ")
     
@@ -74,16 +66,16 @@ if user_input == "2":
   date_column = get_target_column(attendance_tracker, 9, target_date)
 
   for i in range(len(attendance_data)):
+
     if attendance_data[i][date_column - 1] == 'U':
-      try:
-        target_name = attendance_data[i][0].split(' ')[1]  # Assuming column A = full name
-        for row in contact_data:
-          if len(row) > 2 and row[2].strip() == target_name:  # Assuming column C = last name
-            name = row[1] + " " + row[2]  # First + Last name
-            number = row[3]  # Assuming column D = phone
-            message = f"You were fined $5 for unexcused chapter absence on {target_date}"
-            # send_message(number, message)
-            print(f"Sent message to {name} at {number} with message \"{message}\"")
-            break
-      except IndexError:
-        continue
+      target_name = attendance_data[i][0].split(' ')[1]  # Assuming column A = full name
+
+      for row in contact_data:
+        if row[2].strip() == target_name:  # Assuming column C = last name
+          name = row[1] + " " + row[2]  # First + Last name
+          number = row[3]  # Assuming column D = phone
+          message = f"You were fined $5 for unexcused chapter absence on {target_date}"
+
+          # send_message(number, message)
+          print(f"Sent message to {name} at {number} with message \"{message}\"")
+          break
