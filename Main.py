@@ -6,7 +6,7 @@ def send_message(message):
   resp = requests.post('http://textbelt.com/text', {
     'phone': number,
     'message': message,
-    'key': 'ea31552082a7faddc2e662402c162ad559e0b7acFPbV6rJdoVQFmr6RCXpMfy2ip'
+    'key': 'textbelt'
   })
   print(resp.json)
 
