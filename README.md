@@ -1,4 +1,4 @@
-This is the SigPhi Auto Messenger made by Daniel Son!
+This is the SigPhi Auto Messenger made by Daniel Son, written in Python!
 
 The purpose of this script is to automate the process of sending blast texts, fine notices for missing chapter, and other miscellaneous reminders.
 
