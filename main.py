@@ -176,7 +176,7 @@ if __name__ == '__main__':
         message = f"Dues breakdown for {name}:\n\n\n{df.to_string(index=False)}"
         # send_message(number, message)
         print(f"Sent message to {name} at {number} with message\n\n{message}")
-        print("-----------")
+        print("-----------------------------------------------------------")
 
     elif user_input == "5":
 
