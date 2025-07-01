@@ -179,7 +179,11 @@ if __name__ == '__main__':
         print("-----------")
 
     elif user_input == "5":
+
       active = False
+
+      print("\nQuitting...\n")
+      time.sleep(2)
   
     else:
       print("\nInvalid choice. Please enter a number to pick your choice.")
