@@ -1,12 +1,13 @@
 import gspread
 import requests
 import pandas as pd
+import time
 
 def send_message(number, message):
   resp = requests.post('http://textbelt.com/text', {
     'phone': number,
     'message': message,
-    'key': 'textbelt'
+    'key': 'ea31552082a7faddc2e662402c162ad559e0b7acFPbV6rJdoVQFmr6RCXpMfy2ip'
   })
   print(resp.json)
 
@@ -38,22 +39,27 @@ def get_target_row(sheet, column, target): # gets entire row of target cell
 
 if __name__ == '__main__':
 
+  print("\nLoading...\n")
+
   gc = gspread.service_account()
 
   attendance_tracker = gc.open("Chapter Attendance Tracker")
   dues = gc.open("Budget Calculations Fall 2025")
 
   attendance_data = attendance_tracker.sheet1.get_all_values()
-  dues_data = dues.sheet1.get_all_values()[1:51]
-  contact_data = dues_data
+  member_data = dues.sheet1.get_all_values()[1:51]
   
   active = True
 
-  print("\nWelcome to the SigPhi Auto Messenger made by Daniel!")
+  print("Welcome to the SigPhi Auto Messenger made by Daniel!")
 
   while active:
 
-    print("\n\n\nWhat would you like to do?")
+    print("\n\n")
+
+    time.sleep(2)
+
+    print("What would you like to do?\n")
     print("1) Send a blast message")
     print("2) Send out chapter absence and fine notifications")
     print("3) Send a message to specific people")
@@ -71,7 +77,7 @@ if __name__ == '__main__':
       print("")
 
       if confirmation == "confirm":
-        for row in contact_data:
+        for row in member_data:
           name = row[0] + " " + row[1]  # First + Last name
           number = row[2]  # Assuming column D = phone
           # send_message(number, message)
@@ -96,10 +102,10 @@ if __name__ == '__main__':
           if attendance_data[i][date_column - 1] == 'U':
             target_name = attendance_data[i][0].split(' ')[1]  # Assuming column A = full name
 
-            for row in contact_data:
-              if row[2].strip() == target_name:  # Assuming column C = last name
-                name = row[1] + " " + row[2]  # First + Last name
-                number = row[3]  # Assuming column D = phone
+            for row in member_data:
+              if row[1].strip() == target_name:  # Assuming column C = last name
+                name = row[0] + " " + row[1]  # First + Last name
+                number = row[2]  # Assuming column D = phone
                 message = f"You were fined $5 for unexcused chapter absence on {target_date}"
 
                 # send_message(number, message)
@@ -116,15 +122,17 @@ if __name__ == '__main__':
 
       confirmation = input("\nPlease confirm that this is the message you wish to send.\nType \"confirm\" to proceed: ")
 
+      print("")
+
       if confirmation == "confirm":
-        for row in contact_data:
+        for row in member_data:
           if row[1].strip() in target_people:
             name = row[0] + " " + row[1]  # First + Last name
             number = row[2]  # Assuming column D = phone
             # send_message(number, message)
             print(f"Sent message to {name} at {number} with message \"{message}\"")
     elif user_input == "4":
-      for row in dues_data:
+      for row in member_data:
         name = row[0] + " " + row[1]
         number = row[2]
 
@@ -169,9 +177,6 @@ if __name__ == '__main__':
         # send_message(number, message)
         print(f"Sent message to {name} at {number} with message\n\n{message}")
         print("-----------")
-
-
-
 
     elif user_input == "5":
       active = False
