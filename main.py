@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import time
 
+# sends SMS message
 def send_message(number, message):
   resp = requests.post('http://textbelt.com/text', {
     'phone': number,
@@ -37,7 +38,7 @@ def get_target_row(sheet, column, target):
   
   return row_index
 
-#######################################################################################################################
+###########################################################################################
 
 if __name__ == '__main__':
 
@@ -206,4 +207,4 @@ if __name__ == '__main__':
       time.sleep(1.5)
   
     else:
-      print("\nInvalid choice. Please enter a number to pick your choice.")
+      print("\nInvalid choice. Please enter a number 1 - 5 to pick your choice.")
