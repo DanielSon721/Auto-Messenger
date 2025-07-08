@@ -77,7 +77,6 @@ if __name__ == '__main__':
       message = input("\nYour message: ")
 
       confirmation = input("\nPlease confirm that this is the message you wish to send.\nType \"confirm\" to proceed: ")
-
       print("")
 
       if confirmation.lower() == "confirm":
@@ -87,14 +86,13 @@ if __name__ == '__main__':
           # send_message(number, message)
           print(f"Sent message to {name} at {number} with message \"{message}\"")
       else:
-        print("Cancelled\n")
+        print("Confirmation failed")
 
     elif user_input == "2":
 
       target_date = input("\nChapter date: ").strip()
   
       confirmation = input("\nPlease confirm that this is the date of the chapter you wish to fine.\nType \"confirm\" to proceed: ")
-
       print("")
 
       if confirmation.lower() == "confirm":
@@ -121,7 +119,7 @@ if __name__ == '__main__':
         except Exception as e:
           print("Error: Invalid chapter date")
       else:
-        print("Cancelled\n")
+        print("Confirmation failed")
 
     elif user_input == "3":
 
@@ -130,7 +128,6 @@ if __name__ == '__main__':
       message = input("What is your message?: ")
 
       confirmation = input("\nPlease confirm that this is the message you wish to send.\nType \"confirm\" to proceed: ")
-
       print("")
 
       if confirmation.lower() == "confirm":
@@ -140,10 +137,13 @@ if __name__ == '__main__':
             number = row[2]  # phone number
             # send_message(number, message)
             print(f"Sent message to {name} at {number} with message \"{message}\"")
+      else:
+        print("Confirmation failed")
 
     elif user_input == "4":
 
       confirmation = input("\nPlease confirm that you wish to send every member their dues breakdown.\nType \"confirm\" to proceed: ")
+      print("")
 
       if confirmation.lower() == "confirm":
 
@@ -194,6 +194,9 @@ if __name__ == '__main__':
           # send_message(number, message)
           print(f"Sent message to {name} at {number} with message\n\n{message}")
           print("-----------------------------------------------------------")
+
+      else:
+        print("Confirmation failed")
 
     elif user_input == "5":
 
