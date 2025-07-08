@@ -17,7 +17,7 @@ def get_target_column(sheet, row, target): # gets entire column of target cell
     
   column_index = None
   for i, value in enumerate(dates):
-    if value.strip() == target:
+    if value.strip().lower() == target.lower():
       column_index = i + 1  # Google Sheets is 1-based
       break
   
@@ -29,7 +29,7 @@ def get_target_row(sheet, column, target): # gets entire row of target cell
     
   row_index = None
   for i, value in enumerate(dates):
-    if value.strip() == target:
+    if value.strip().lower() == target.lower():
       row_index = i + 1  # Google Sheets is 1-based
       break
   
@@ -51,13 +51,13 @@ if __name__ == '__main__':
   
   active = True
 
-  print("Welcome to the SigPhi Auto Messenger made by Daniel!")
+  print("Welcome to the SigPhi Auto Messenger made by Daniel Son!")
 
   while active:
 
     print("\n\n")
 
-    time.sleep(2)
+    time.sleep(1.5)
 
     print("What would you like to do?\n")
     print("1) Send a blast message")
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
       print("")
 
-      if confirmation == "confirm":
+      if confirmation.lower() == "confirm":
         for row in member_data:
           name = row[0] + " " + row[1]  # First + Last name
           number = row[2]  # Assuming column D = phone
@@ -93,7 +93,7 @@ if __name__ == '__main__':
 
       print("")
 
-      if confirmation == "confirm":
+      if confirmation.lower() == "confirm":
 
         date_column = get_target_column(attendance_tracker, 9, target_date)
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
             target_name = attendance_data[i][0].split(' ')[1]  # Assuming column A = full name
 
             for row in member_data:
-              if row[1].strip() == target_name:  # Assuming column C = last name
+              if row[1].strip().lower() == target_name.lower():  # Assuming column C = last name
                 name = row[0] + " " + row[1]  # First + Last name
                 number = row[2]  # Assuming column D = phone
                 message = f"You were fined $5 for unexcused chapter absence on {target_date}"
@@ -124,9 +124,9 @@ if __name__ == '__main__':
 
       print("")
 
-      if confirmation == "confirm":
+      if confirmation.lower() == "confirm":
         for row in member_data:
-          if row[1].strip() in target_people:
+          if row[1].strip().lower() in target_people:
             name = row[0] + " " + row[1]  # First + Last name
             number = row[2]  # Assuming column D = phone
             # send_message(number, message)
@@ -173,7 +173,7 @@ if __name__ == '__main__':
         df = pd.DataFrame(data)
         df["Amount"] = df["Amount"].apply(lambda x: "{:,.2f}".format(x) if isinstance(x, (int, float)) else x)
 
-        message = f"Dues breakdown for {name}:\n\n\n{df.to_string(index=False)}"
+        message = f"Dues breakdown for {name}:\n\n\n{df.to_string(index=False)}\n\nText Daniel Son with any questions or concerns."
         # send_message(number, message)
         print(f"Sent message to {name} at {number} with message\n\n{message}")
         print("-----------------------------------------------------------")
@@ -183,7 +183,7 @@ if __name__ == '__main__':
       active = False
 
       print("\nQuitting...\n")
-      time.sleep(2)
+      time.sleep(1.5)
   
     else:
       print("\nInvalid choice. Please enter a number to pick your choice.")
