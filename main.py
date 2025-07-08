@@ -11,7 +11,8 @@ def send_message(number, message):
   })
   print(resp.json)
 
-def get_target_column(sheet, row, target): # gets entire column of target cell
+# gets entire column of target cell
+def get_target_column(sheet, row, target):
 
   dates = sheet.sheet1.row_values(row)
     
@@ -23,7 +24,8 @@ def get_target_column(sheet, row, target): # gets entire column of target cell
   
   return column_index
 
-def get_target_row(sheet, column, target): # gets entire row of target cell
+# gets entire row of target cell
+def get_target_row(sheet, column, target):
 
   dates = sheet.sheet1.col_values(column)
     
@@ -49,17 +51,19 @@ if __name__ == '__main__':
   attendance_data = attendance_tracker.sheet1.get_all_values()
   member_data = dues.sheet1.get_all_values()[1:51]
   
-  active = True
+  active = True # continue/end program
 
+  print("---------------------------------------------------------")
   print("Welcome to the SigPhi Auto Messenger made by Daniel Son!")
+  print("---------------------------------------------------------")
 
   while active:
 
-    print("\n\n")
-
     time.sleep(1.5)
 
-    print("What would you like to do?\n")
+    print("\n---------------------------")
+    print("What would you like to do?")
+    print("---------------------------\n")
     print("1) Send a blast message")
     print("2) Send out chapter absence and fine notifications")
     print("3) Send a message to specific people")
@@ -78,8 +82,8 @@ if __name__ == '__main__':
 
       if confirmation.lower() == "confirm":
         for row in member_data:
-          name = row[0] + " " + row[1]  # First + Last name
-          number = row[2]  # Assuming column D = phone
+          name = row[0] + " " + row[1]  # first + last name
+          number = row[2]  # phone number
           # send_message(number, message)
           print(f"Sent message to {name} at {number} with message \"{message}\"")
       else:
@@ -95,29 +99,34 @@ if __name__ == '__main__':
 
       if confirmation.lower() == "confirm":
 
-        date_column = get_target_column(attendance_tracker, 9, target_date)
+        try:
 
-        for i in range(len(attendance_data)):
+          date_column = get_target_column(attendance_tracker, 9, target_date)
 
-          if attendance_data[i][date_column - 1] == 'U':
-            target_name = attendance_data[i][0].split(' ')[1]  # Assuming column A = full name
+          for i in range(len(attendance_data)): # loops through every member on given date
 
-            for row in member_data:
-              if row[1].strip().lower() == target_name.lower():  # Assuming column C = last name
-                name = row[0] + " " + row[1]  # First + Last name
-                number = row[2]  # Assuming column D = phone
-                message = f"You were fined $5 for unexcused chapter absence on {target_date}"
+            if attendance_data[i][date_column - 1] == 'U':
+              target_name = attendance_data[i][0].split(' ')[1]  # gets last name
 
-                # send_message(number, message)
-                print(f"Sent message to {name} at {number} with message \"{message}\"")
-                break
+              for row in member_data: # loops through every members' contact info
+                if row[1].strip().lower() == target_name.lower():  # if last name matches
+                  name = row[0] + " " + row[1]  # first + last name
+                  number = row[2]  # phone number
+                  message = f"You were fined $5 for unexcused chapter absence on {target_date}"
+
+                  # send_message(number, message)
+                  print(f"Sent message to {name} at {number} with message \"{message}\"")
+                  break
+        
+        except Exception as e:
+          print("Error: Invalid chapter date")
       else:
         print("Cancelled\n")
 
     elif user_input == "3":
 
-      target_people = input("Who do you want to send a message to? (name, name, name): ").strip()
-      target_people = target_people.split(', ')
+      target_people = input("Who do you want to send a message to? ([last name], [last name], [last name]): ").strip()
+      target_people = target_people.replace(" ", "").split(',')
       message = input("What is your message?: ")
 
       confirmation = input("\nPlease confirm that this is the message you wish to send.\nType \"confirm\" to proceed: ")
@@ -125,58 +134,66 @@ if __name__ == '__main__':
       print("")
 
       if confirmation.lower() == "confirm":
-        for row in member_data:
+        for row in member_data: # loops through every members' contact info
           if row[1].strip().lower() in target_people:
-            name = row[0] + " " + row[1]  # First + Last name
-            number = row[2]  # Assuming column D = phone
+            name = row[0] + " " + row[1]  # first + last name
+            number = row[2]  # phone number
             # send_message(number, message)
             print(f"Sent message to {name} at {number} with message \"{message}\"")
+
     elif user_input == "4":
-      for row in member_data:
-        name = row[0] + " " + row[1]
-        number = row[2]
 
-        base_due = 620
-        tenant_discount = float(row[4]) if row[4] else 0  # Already negative
-        senior_discount_rate = float(row[5]) if row[5] else 0  # e.g., -0.25
+      confirmation = input("\nPlease confirm that you wish to send every member their dues breakdown.\nType \"confirm\" to proceed: ")
 
-        # Apply senior discount on base due AFTER tenant discount
-        base_after_tenant = base_due + tenant_discount
-        senior_discount = base_after_tenant * senior_discount_rate
-        national_dues = 200
-        ifc_dues = 30
-        total_due = base_due + tenant_discount + senior_discount + national_dues + ifc_dues
+      if confirmation.lower() == "confirm":
 
-        data = {
-            "Description": [
-              "",
-              "Chapter dues",
-              "Tenant discount",
-              "Senior discount",
-              "National dues",
-              "IFC dues",
-              "",
-              "TOTAL"
-            ],
-            "Amount": [
-              "",
-              base_due,
-              tenant_discount,
-              senior_discount,
-              national_dues,
-              ifc_dues,
-              "",
-              total_due
-            ]
-        }
+        for row in member_data: # loops through every members' contact info
 
-        df = pd.DataFrame(data)
-        df["Amount"] = df["Amount"].apply(lambda x: "{:,.2f}".format(x) if isinstance(x, (int, float)) else x)
+          name = row[0] + " " + row[1]
+          number = row[2]
 
-        message = f"Dues breakdown for {name}:\n\n\n{df.to_string(index=False)}\n\nText Daniel Son with any questions or concerns."
-        # send_message(number, message)
-        print(f"Sent message to {name} at {number} with message\n\n{message}")
-        print("-----------------------------------------------------------")
+          base_due = 620
+          tenant_discount = float(row[4]) if row[4] else 0  # already negative
+          senior_discount_rate = float(row[5]) if row[5] else 0  # e.g., -0.25
+
+          # Apply senior discount on base due AFTER tenant discount
+          base_after_tenant = base_due + tenant_discount
+          senior_discount = base_after_tenant * senior_discount_rate
+          national_dues = 200
+          ifc_dues = 30
+          total_due = base_due + tenant_discount + senior_discount + national_dues + ifc_dues
+
+          data = {
+              "Description": [
+                "",
+                "Chapter dues",
+                "Tenant discount",
+                "Senior discount",
+                "National dues",
+                "IFC dues",
+                "",
+                "TOTAL"
+              ],
+              "Amount": [
+                "",
+                base_due,
+                tenant_discount,
+                senior_discount,
+                national_dues,
+                ifc_dues,
+                "",
+                total_due
+              ]
+          }
+
+          # formats breakdown
+          df = pd.DataFrame(data)
+          df["Amount"] = df["Amount"].apply(lambda x: "{:,.2f}".format(x) if isinstance(x, (int, float)) else x)
+
+          message = f"Dues breakdown for {name}:\n\n\n{df.to_string(index=False)}\n\nText Daniel Son with any questions or concerns."
+          # send_message(number, message)
+          print(f"Sent message to {name} at {number} with message\n\n{message}")
+          print("-----------------------------------------------------------")
 
     elif user_input == "5":
 
